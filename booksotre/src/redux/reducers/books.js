@@ -1,16 +1,17 @@
+import uuid from 'uuid';
+
+import { ADD_BOOK, DEL_BOOK } from '../actionTypes';
+
 const initialState = {
   books: [
     {
-      name: 'JS from begining to give up',
+      id: uuid(),
+      name: 'JS From Begining To Give Up',
       price: 0.01,
       category: 'Educational',
     },
   ],
 };
-
-//action types
-const ADD_BOOK = 'ADD_BOOK';
-const DEL_BOOK = 'DEL_BOOK';
 
 export default function(state = initialState, action) {
   switch (action.type) {
@@ -21,19 +22,18 @@ export default function(state = initialState, action) {
         books: [...state.books, book],
       };
     }
-    // case DEL_BOOK: {
-    //   const { id } = action.payload;
-    //   return {
-    //     ...state,
-    //     byIds: {
-    //       ...state.byIds,
-    //       [id]: {
-    //         ...state.byIds[id],
-    //         completed: !state.byIds[id].completed,
-    //       },
-    //     },
-    //   };
-    // }
+    case DEL_BOOK: {
+      const { id } = action.payload;
+      let newBookList = Object.assign([], state.books);
+      newBookList = newBookList.filter(function(obj) {
+        return obj.id !== id;
+      });
+
+      return {
+        ...state,
+        books: newBookList,
+      };
+    }
     default:
       return state;
   }

@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
 
-import { AppProvider } from '@shopify/polaris';
+import { AppProvider, Card } from '@shopify/polaris';
 import PropTypes from 'prop-types';
 
-import { BookList } from './modules/bookList';
+import BookList from './modules/bookList';
 
 class App extends Component {
-  static contextTypes = {
-    store: PropTypes.object,
-  };
-
   render() {
     return (
       <AppProvider>
-        <BookList />
+        <Card title="Book List" sectioned>
+          <p>View a summary of your online store’s performance.</p>
+          <BookList />
+        </Card>
       </AppProvider>
     );
   }
