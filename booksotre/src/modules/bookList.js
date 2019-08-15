@@ -59,6 +59,7 @@ export class BookList extends Component {
 
     console.log('changeEditWindowState', this.state.editWindow);
   };
+
   render() {
     const { books } = this.props;
     if (!books) return null;
