@@ -13,33 +13,33 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { delBook } from '../redux/actions';
-
+import AddBook from './addBook';
+import EditBook from './editBook';
 export class BookList extends Component {
-  state = {
-    books: this.props.books,
-  };
+  //Now we can use connect to link store with props
+  //so follow code are useless, although they all works
+  //depends on which style you want to use
 
-  async componentDidMount() {
-    const { books } = this.props;
-    await this.setState({ books });
-  }
+  // state = {
+  //   books: this.props.books,
+  // };
 
-  shouldComponentUpdate(nextProps, nextState) {
-    console.log('shouldComponentUpdate', this.props, nextProps);
-    return (
-      !(this.props.books === nextProps.books) ||
-      !(this.state.books === nextState.books)
-    );
-  }
+  // async componentDidMount() {
+  //   const { books } = this.props;
+  //   await this.setState({ books });
+  // }
 
-  async componentWillUpdate(nextProps, nextState) {
-    console.log('@@@@@@@@@@@@@@@@');
-    console.log('state', this.state);
-    console.log('props', this.props);
-    console.log('nextState', nextState);
-    console.log('nextProps', nextProps);
-    this.setState({ books: nextProps.books });
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log('shouldComponentUpdate', this.props, nextProps);
+  //   return (
+  //     !(this.props.books === nextProps.books) ||
+  //     !(this.state.books === nextState.books)
+  //   );
+  // }
+
+  // async componentWillUpdate(nextProps, nextState) {
+  //   this.setState({ books: nextProps.books });
+  // }
 
   // componentWillReceiveProps(props) {
   //   console.log(props);
@@ -48,13 +48,24 @@ export class BookList extends Component {
   //   }
   // }
 
+  state = {
+    editWindow: false,
+  };
+
+  changeEditWindowState = () => {
+    this.setState(({ editWindow }) => ({
+      editWindow: !editWindow,
+    }));
+
+    console.log('changeEditWindowState', this.state.editWindow);
+  };
   render() {
-    console.log('>>>>>>>>>>');
-    const { books } = this.state;
+    const { books } = this.props;
     if (!books) return null;
-    console.log('render books', books);
     return (
       <div style={{ maxWidth: '800px' }}>
+        <AddBook />
+
         <Card sectioned>
           <ResourceList
             resourceName={{ singular: 'customer', plural: 'customers' }}
@@ -66,37 +77,44 @@ export class BookList extends Component {
                 <ResourceList.Item
                   id={id}
                   accessibilityLabel={`View details for ${name}`}
+                  onClick={() => this.changeEditWindowState()}
                 >
-                  <div id="itemListInfo">
+                  <EditBook
+                    active={this.state.editWindow}
+                    changeEditWindowState={this.changeEditWindowState}
+                    data={item}
+                  />
+                  <div id='itemListInfo'>
                     <List>
                       <List.Item>
-                        <TextStyle variation="strong">Name:</TextStyle>
+                        <TextStyle variation='strong'>Name:</TextStyle>
                         <Caption>
-                          <TextStyle variation="strong"> {name}</TextStyle>
+                          <TextStyle variation='strong'> {name}</TextStyle>
                         </Caption>
                       </List.Item>
                       <List.Item>
-                        <TextStyle variation="strong">Price:</TextStyle>
+                        <TextStyle variation='strong'>Price:</TextStyle>
                         <Caption>
-                          <TextStyle variation="strong"> {price}$</TextStyle>
+                          <TextStyle variation='strong'>
+                            {price ? price + '$' : ''}
+                          </TextStyle>
                         </Caption>
                       </List.Item>
                       <List.Item>
-                        <TextStyle variation="strong">Category:</TextStyle>
+                        <TextStyle variation='strong'>Category:</TextStyle>
                         <Caption>
-                          <TextStyle variation="strong"> {category}</TextStyle>
+                          <TextStyle variation='strong'> {category}</TextStyle>
                         </Caption>
                       </List.Item>
                     </List>
                   </div>
-                  <div id="itemListActions">
+                  <div id='itemListActions'>
                     <div>
                       <Button
                         onClick={event => {
                           event.stopPropagation();
                           const { delBook } = this.props;
                           delBook(id);
-                          // console.log('123', this.props);
                         }}
                       >
                         Remove

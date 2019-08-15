@@ -16,7 +16,8 @@ const initialState = {
 export default function(state = initialState, action) {
   switch (action.type) {
     case ADD_BOOK: {
-      const { book } = action.payload;
+      const book = action.payload;
+      console.log('ADD_BOOK', action);
       return {
         ...state,
         books: [...state.books, book],
