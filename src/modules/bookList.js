@@ -30,8 +30,8 @@ export class BookList extends Component {
             resourceName={{ singular: 'customer', plural: 'customers' }}
             items={books}
             renderItem={item => {
-              const { id, name, price, category, description } = item;
-
+              const { id, name, price, category } = item;
+              //const { description } = item;
               const book = Object.assign({}, item);
               return (
                 <ResourceList.Item
@@ -63,14 +63,15 @@ export class BookList extends Component {
                           </TextStyle>
                         </Caption>
                       </List.Item>
-                      <List.Item>
+                      {/*
+                        <List.Item>
                         <TextStyle variation='strong'>Description:</TextStyle>
                         <Caption>
                           <TextStyle variation='strong'>
                             {description ? description : 'N/A'}
                           </TextStyle>
                         </Caption>
-                      </List.Item>
+                      </List.Item> */}
                     </List>
                   </div>
                   <div id='itemListActions'>
