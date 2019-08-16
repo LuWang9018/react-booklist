@@ -1,14 +1,7 @@
-import React, { Component, PureComponent } from 'react';
+import React from 'react';
 import {
   Button,
-  Card,
-  ResourceList,
-  TextStyle,
-  List,
-  Caption,
-  Layout,
   Modal,
-  TextContainer,
   FormLayout,
   TextField,
   InlineError,
@@ -23,8 +16,6 @@ export class AddBook extends React.Component {
   };
 
   async stateHook(data, attr) {
-    console.log('attr', attr);
-    console.log('data', data);
     await this.setState({ [attr]: data });
     this.setState({ isDirty: true });
   }
@@ -64,7 +55,6 @@ export class AddBook extends React.Component {
       <InlineError message='Name is required' fieldID='Text_Name' />
     ) : null;
 
-    console.log(this.state.showInlineError);
     return (
       <div style={{ height: '50px' }}>
         <Button onClick={this.handleClose}>Add Book</Button>
@@ -94,12 +84,12 @@ export class AddBook extends React.Component {
                 onChange={value => this.stateHook(value, 'price')}
               />
               <TextField
-                label='category'
+                label='Category'
                 value={this.state['category']}
                 onChange={value => this.stateHook(value, 'category')}
               />
               <TextField
-                label='description'
+                label='Description'
                 multiline
                 value={this.state['description']}
                 onChange={value => this.stateHook(value, 'description')}

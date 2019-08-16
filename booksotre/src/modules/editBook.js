@@ -1,57 +1,36 @@
-import React, { Component, PureComponent } from 'react';
-import {
-  Button,
-  Card,
-  ResourceList,
-  TextStyle,
-  List,
-  Caption,
-  Layout,
-  Modal,
-  TextContainer,
-  FormLayout,
-  TextField,
-  InlineError,
-} from '@shopify/polaris';
+import React from 'react';
+import { Modal, FormLayout, TextField, InlineError } from '@shopify/polaris';
 import { connect } from 'react-redux';
-import { addBook } from '../redux/actions';
+import { changeEditState, editBook } from '../redux/actions';
 
 export class EditBook extends React.Component {
-  state = {
-    active: this.props.active,
-    isDirty: false,
-    name: this.props.name,
-    price: this.props.price,
-    category: this.props.category,
-    description: this.props.description,
-  };
+  state = {};
 
   shouldComponentUpdate(nextProps, nextState) {
     return !(this.props === nextProps) || !(this.state === nextState);
   }
 
-  componentWillUpdate(nextProps) {
-    console.log('componentWillUpdate');
-    if (this.props !== nextProps) {
+  UNSAFE_componentWillUpdate(nextProps) {
+    if (this.props !== nextProps && nextProps.data) {
       this.setState({
-        active: nextProps.active,
-        name: nextProps.name,
-        price: nextProps.price,
-        category: nextProps.category,
-        description: nextProps.description,
+        id: nextProps.data.id,
+        active: nextProps.data.active,
+        name: nextProps.data.name,
+        price: nextProps.data.price,
+        category: nextProps.data.category,
+        description: nextProps.data.description,
       });
     }
   }
 
   async stateHook(data, attr) {
-    console.log('attr', attr);
-    console.log('data', data);
     await this.setState({ [attr]: data });
     this.setState({ isDirty: true });
   }
 
   clearData = () => {
     this.setState({
+      id: undefined,
       name: undefined,
       price: undefined,
       category: undefined,
@@ -59,42 +38,42 @@ export class EditBook extends React.Component {
     });
 
     //close window as well
-    this.setState({ active: false });
-    this.props.changeEditWindowState();
+    this.props.changeEditState();
   };
 
-  handleAdd = () => {
-    const { name, price, category, description } = this.state;
+  handleEdit = event => {
+    event.stopPropagation();
+
+    const { id, name, price, category, description } = this.state;
     if (name && name.length > 0) {
-      const newbook = { name, price, category, description };
-      this.props.addBook(newbook);
+      const newbook = { id, name, price, category, description };
+      this.props.editBook(newbook);
       this.clearData();
       this.setState({ showInlineError: false, isDirty: false });
+      this.props.changeEditState(false);
     } else {
       this.setState({ showInlineError: true });
     }
   };
 
-  handleClose = () => {
-    this.clearData();
+  handleClose = event => {
+    event.stopPropagation();
+    this.props.changeEditState(false);
   };
 
   render() {
-    const { active } = this.state;
-
     const inlineError = this.state.showInlineError ? (
       <InlineError message='Name is required' fieldID='Text_Name' />
     ) : null;
 
-    console.log(this.state.showInlineError);
     return (
       <Modal
-        open={active}
+        open={this.props.editWindowState}
         onClose={this.handleClose}
-        title='Add a new book'
+        title='Edit book'
         primaryAction={{
-          content: 'Add Book',
-          onAction: this.handleAdd,
+          content: 'Edit',
+          onAction: this.handleEdit,
         }}
       >
         <Modal.Section>
@@ -114,12 +93,12 @@ export class EditBook extends React.Component {
               onChange={value => this.stateHook(value, 'price')}
             />
             <TextField
-              label='category'
+              label='Category'
               value={this.state['category']}
               onChange={value => this.stateHook(value, 'category')}
             />
             <TextField
-              label='description'
+              label='Description'
               multiline
               value={this.state['description']}
               onChange={value => this.stateHook(value, 'description')}
@@ -132,6 +111,10 @@ export class EditBook extends React.Component {
 }
 
 export default connect(
-  null,
-  {}
+  state => ({
+    books: state.books,
+    editWindowState: state.editWindow.editWindowState,
+    data: state.editWindow.currentEditing,
+  }),
+  { changeEditState, editBook }
 )(EditBook);
