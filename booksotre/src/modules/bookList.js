@@ -51,21 +51,23 @@ export class BookList extends Component {
                         <TextStyle variation='strong'>Price:</TextStyle>
                         <Caption>
                           <TextStyle variation='strong'>
-                            {price ? price + ' $' : ''}
+                            {price ? price + ' $' : 'N/A'}
                           </TextStyle>
                         </Caption>
                       </List.Item>
                       <List.Item>
                         <TextStyle variation='strong'>Category:</TextStyle>
                         <Caption>
-                          <TextStyle variation='strong'> {category}</TextStyle>
+                          <TextStyle variation='strong'>
+                            {category ? category : 'N/A'}
+                          </TextStyle>
                         </Caption>
                       </List.Item>
                       <List.Item>
                         <TextStyle variation='strong'>Description:</TextStyle>
                         <Caption>
                           <TextStyle variation='strong'>
-                            {description}
+                            {description ? description : 'N/A'}
                           </TextStyle>
                         </Caption>
                       </List.Item>
